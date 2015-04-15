@@ -28,7 +28,8 @@ var labelLetterBall = Ti.UI.createLabel({
 	color:'white',
 	textAlign:'center',
 	font:{fontSize:30},
-	text:"A"
+	text:"A",
+	opacity:0
 });
 
 //	Create & Define Absolute LabelLetter
@@ -153,6 +154,32 @@ var rowHeight = 95;
 var totalHeight = (parseInt(table.data[0].rowCount))*rowHeight;
 var rowCount = table.data[0].rowCount;
 
+//	DEFINE ANIMATION & LISTERNERS
+var activityShow = 0;
+var activityHide = 0;
+
+var animateShow = Ti.UI.createAnimation({
+	opacity:1,
+	duration:150
+});
+
+labelLetterBall.addEventListener('aShow',function(e){
+  	activityShow = activityShow+1;
+  	if(activityShow==1){labelLetterBall.animate(animateShow);}
+  	else{activityHide=0;}
+});
+
+var animateHide= Ti.UI.createAnimation({
+	opacity:0,
+	duration:10
+});
+
+labelLetterBall.addEventListener('aHide',function(e){
+	activityHide = activityHide+1;
+    if(activityHide==1){labelLetterBall.animate(animateHide);}
+    else{activityShow=0;}
+});
+	
 //	ADD LISTERNERS
 table.addEventListener('scroll',function(e){
 	
@@ -162,16 +189,26 @@ table.addEventListener('scroll',function(e){
 	var nextVisibleLetter = (table.data[0].rows[firstVisibleItemIndex+1].children[2].text).charAt(0);
 	
 	//define offset & calcs
-	/*var offsetTop = firstVisibleItemIndex * rowHeight;
+	var baseTop = 59;	
+	var offsetTop = firstVisibleItemIndex * rowHeight;
 	var offsetPercent = (offsetTop/totalHeight) * 100;
 	var uiHeight = table.rect.height;
 	var offsetScrollTarget = (offsetPercent * uiHeight) / 100;
-		labelLetterBall.setTop(offsetScrollTarget);*/
-	
+		offsetScrollTarget = parseInt(offsetScrollTarget.toFixed(2));
+		
+		//set top
+		labelLetterBall.setTop(offsetScrollTarget);
+
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
 	absoluteLabelLetter.setText(firstVisibleLetter);
 	
+	//animation scroll tooltip
+	if(offsetScrollTarget > baseTop){
+		labelLetterBall.fireEvent('aShow');
+	} else if(offsetScrollTarget < baseTop-1) {
+		labelLetterBall.fireEvent('aHide');
+	}
 });
 
 //	ADD objs to window
