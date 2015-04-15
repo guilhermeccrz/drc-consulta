@@ -39,7 +39,7 @@ var absoluteLabelLetter = Ti.UI.createLabel({
     width:25,
     height:30,
     text:'A',
-    top:"89px",
+    top:"91px",
     left:"40px",
     verticalAlign: 'bottom',
     backgroundColor: 'white',
