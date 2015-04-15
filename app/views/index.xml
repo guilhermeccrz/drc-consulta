@@ -1,0 +1,16 @@
+<Alloy>
+	<Collection src="specifics"></Collection>
+	<Window class="container">
+        <Label id="label">1. Escolha sua especialidade</Label>
+        <Label id="letter">A</Label>
+        
+        <TableView id="table" dataCollection="specifics">
+			<TableViewRow>
+				<Label class="rowLetter"></Label>
+				<Label class="rowIcon">Icon</Label>
+				<Label class="rowDetail">{title}</Label>
+				<Label class="rowPrice">R$10 a 120</Label>
+			</TableViewRow>
+		</TableView>     
+	</Window>
+</Alloy>
