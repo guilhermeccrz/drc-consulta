@@ -152,12 +152,6 @@ table.addEventListener('scroll',function(e){
 	
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
-	table.data[0].rows[firstVisibleItemIndex].children[0].setText(firstVisibleLetter);
-	
-	//Verify next element of FirstVisible data index and set BlankText
-	if(firstVisibleLetter == nextVisibleLetter){
-		table.data[0].rows[firstVisibleItemIndex+1].children[0].setText(' ');
-	}
 	
 });
 
