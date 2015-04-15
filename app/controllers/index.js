@@ -31,6 +31,34 @@ var labelLetterBall = Ti.UI.createLabel({
 	text:"A"
 });
 
+//	Create & Define Absolute LabelLetter
+var absoluteLabelLetter = Ti.UI.createLabel({
+    textAlign:'left',
+	left:0,
+    font:{fontSize:20},
+    width:25,
+    height:30,
+    text:'A',
+    top:"89px",
+    left:"40px",
+    verticalAlign: 'bottom',
+    backgroundColor: 'white',
+    zIndex:3
+});
+
+var labelPadding = Ti.UI.createLabel({
+    textAlign:'left',
+	left:0,
+    font:{fontSize:20},
+    width:25,
+    height:30,
+    text:'',
+    top:"84px",
+    left:"40px",
+    backgroundColor:'white',
+    zIndex:2
+});
+
 //	Define Data /Parse JSON
 var tableData = [];
 var tableJsonDataClean = '{"consultas":[{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"}]}';
@@ -47,23 +75,13 @@ for (var i=1; i<tableDataLength; i++){
 	var rowData = tableJsonData.consultas[i];
 	var rowLetter = (rowData.title).charAt(0);
 		
-	//	VERIFY tableData to see if there is any same rowLetter
-		/*for (var index=0; index<tableData.length; index++){
-			var letter = tableData[index].rowLetter;
-
-			if(rowLetter == letter ){
-				rowLetter = '';
-			} else{}
-		}*/	
-		
-		
+	//	VERIFY tableData to see if there is any same rowLetter	
 		if (letters.indexOf(rowLetter) === -1) {
 		 	letters.push(rowLetter);
 		} else {
 		 	rowLetter = '';
 		};
-		
-		console.log(letters);
+
 
 	//	Define TableRow
 	var row = Ti.UI.createTableViewRow({
@@ -152,10 +170,13 @@ table.addEventListener('scroll',function(e){
 	
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
+	absoluteLabelLetter.setText(firstVisibleLetter);
 	
 });
 
 //	ADD objs to window
+win.add(labelPadding);
+win.add(absoluteLabelLetter);
 win.add(labelLetterBall);
 win.add(labelTitle);
 win.add(table);
