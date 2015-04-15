@@ -60,6 +60,18 @@ var labelPadding = Ti.UI.createLabel({
     zIndex:2
 });
 
+//	Create & Define Hidden Label to Fix ScrollEvent StopPropagation **HACK SAFADO
+var labelOverMask = Ti.UI.createLabel({
+	left:"40px",
+	color:"#6e6f71",
+	backgroundColor:'transparent',
+	opacity:1,
+	width:'100%',
+	height:'1px',
+	zIndex:3
+});
+
+
 //	Define Data /Parse JSON
 var tableData = [];
 var tableJsonDataClean = '{"consultas":[{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Almoço"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Beirute"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"},{"title":"Caldo de Cana"}]}';
@@ -163,6 +175,7 @@ var animateShow = Ti.UI.createAnimation({
 	duration:150
 });
 
+//	ADD LISTERNERS
 labelLetterBall.addEventListener('aShow',function(e){
   	activityShow = activityShow+1;
   	if(activityShow==1){labelLetterBall.animate(animateShow);}
@@ -171,7 +184,7 @@ labelLetterBall.addEventListener('aShow',function(e){
 
 var animateHide= Ti.UI.createAnimation({
 	opacity:0,
-	duration:10
+	duration:150
 });
 
 labelLetterBall.addEventListener('aHide',function(e){
@@ -179,8 +192,24 @@ labelLetterBall.addEventListener('aHide',function(e){
     if(activityHide==1){labelLetterBall.animate(animateHide);}
     else{activityShow=0;}
 });
+
+labelLetterBall.addEventListener('aHideStart',function(e){
+	activityHide = activityHide+1;
+    if(activityHide==1){labelLetterBall.animate(animateHide);}
+    activityShow=0;
+});
 	
-//	ADD LISTERNERS
+table.addEventListener('scrollend',function(e){
+	labelOverMask.setHeight('100%');
+	
+    setTimeout(function(){
+    	labelLetterBall.animate(animateHide,function(){
+    		labelOverMask.setHeight('1px');	
+    	});
+    	activityShow=0;
+    },500);
+});
+
 table.addEventListener('scroll',function(e){
 	
 	//define letter
@@ -189,7 +218,7 @@ table.addEventListener('scroll',function(e){
 	var nextVisibleLetter = (table.data[0].rows[firstVisibleItemIndex+1].children[2].text).charAt(0);
 	
 	//define offset & calcs
-	var baseTop = 59;	
+	var baseTop = 75;	
 	var offsetTop = firstVisibleItemIndex * rowHeight;
 	var offsetPercent = (offsetTop/totalHeight) * 100;
 	var uiHeight = table.rect.height;
@@ -197,21 +226,27 @@ table.addEventListener('scroll',function(e){
 		offsetScrollTarget = parseInt(offsetScrollTarget.toFixed(2));
 		
 		//set top
-		labelLetterBall.setTop(offsetScrollTarget);
+		labelLetterBall.setTop(offsetScrollTarget+30);
 
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
 	absoluteLabelLetter.setText(firstVisibleLetter);
+	labelLetterBall.fireEvent('aShow');
 	
 	//animation scroll tooltip
-	if(offsetScrollTarget > baseTop){
+	/*if(offsetScrollTarget > baseTop){
 		labelLetterBall.fireEvent('aShow');
 	} else if(offsetScrollTarget < baseTop-1) {
-		labelLetterBall.fireEvent('aHide');
+		//labelLetterBall.fireEvent('aHide');
+	}*/
+	
+	if(offsetScrollTarget < baseTop-1) {
+		labelLetterBall.fireEvent('aHideStart');
 	}
 });
 
 //	ADD objs to window
+win.add(labelOverMask);
 win.add(labelPadding);
 win.add(absoluteLabelLetter);
 win.add(labelLetterBall);
