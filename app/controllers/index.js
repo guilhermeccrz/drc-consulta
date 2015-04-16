@@ -171,8 +171,7 @@ var activityShow = 0;
 var activityHide = 0;
 
 var animateShow = Ti.UI.createAnimation({
-	opacity:1,
-	duration:150
+	opacity:1
 });
 
 //	ADD LISTERNERS
@@ -183,8 +182,7 @@ labelLetterBall.addEventListener('aShow',function(e){
 });
 
 var animateHide= Ti.UI.createAnimation({
-	opacity:0,
-	duration:150
+	opacity:0
 });
 
 labelLetterBall.addEventListener('aHide',function(e){
@@ -200,14 +198,18 @@ labelLetterBall.addEventListener('aHideStart',function(e){
 });
 	
 table.addEventListener('scrollend',function(e){
-	labelOverMask.setHeight('100%');
+	//stop animate
+		labelOverMask.setHeight('100%');
+	//labelLetterBall.animate();	
+	
 	
     setTimeout(function(){
     	labelLetterBall.animate(animateHide,function(){
+    		//enable animate
     		labelOverMask.setHeight('1px');	
     	});
     	activityShow=0;
-    },500);
+    },10);
 });
 
 table.addEventListener('scroll',function(e){
@@ -231,17 +233,11 @@ table.addEventListener('scroll',function(e){
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
 	absoluteLabelLetter.setText(firstVisibleLetter);
-	labelLetterBall.fireEvent('aShow');
-	
-	//animation scroll tooltip
-	/*if(offsetScrollTarget > baseTop){
-		labelLetterBall.fireEvent('aShow');
-	} else if(offsetScrollTarget < baseTop-1) {
-		//labelLetterBall.fireEvent('aHide');
-	}*/
+	labelLetterBall.fireEvent('aShow');	
+
 	
 	if(offsetScrollTarget < baseTop-1) {
-		labelLetterBall.fireEvent('aHideStart');
+		//	labelLetterBall.fireEvent('aHideStart');
 	}
 });
 
