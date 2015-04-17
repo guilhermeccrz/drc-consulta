@@ -169,47 +169,69 @@ var rowCount = table.data[0].rowCount;
 //	DEFINE ANIMATION & LISTERNERS
 var activityShow = 0;
 var activityHide = 0;
+var animateState = 0;
 
 var animateShow = Ti.UI.createAnimation({
-	opacity:1
+	opacity:1,
+	duration:500,
+	delay:500
 });
 
-//	ADD LISTERNERS
+//	ADD LISTERNERS TENTAR SEM O SETIMEOUT E COLOCAR DELAY
 labelLetterBall.addEventListener('aShow',function(e){
-  	activityShow = activityShow+1;
-  	if(activityShow==1){labelLetterBall.animate(animateShow);}
-  	else{activityHide=0;}
+	
+  		//animateState = 1;
+  		console.log('animate show  fired');
+  	
+  	  //setTimeout(function(){
+  	  	console.log('animating show');
+  	  	if(animateState == 0){
+  	  			animateState = 1;
+  	  		//setTimeout(function(){
+  	  			console.log('starting timeout show');
+  	  			labelLetterBall.animate(animateShow,function(){
+		  		animateState = 0;
+		  		console.log('animate show done');
+		  		});
+  	  		//},500);	
+		  	
+	  	}
+  	//},500);
 });
 
 var animateHide= Ti.UI.createAnimation({
-	opacity:0
+	opacity:0,
+	duration:500,
+	delay:500
 });
 
 labelLetterBall.addEventListener('aHide',function(e){
-	activityHide = activityHide+1;
-    if(activityHide==1){labelLetterBall.animate(animateHide);}
-    else{activityShow=0;}
+	
+	if(animateState == 0){
+		animateState = 1;
+	   labelLetterBall.animate(animateHide,function(){
+		    		animateState = 0;
+		    		console.log('animate hiden done');
+		});
+	}else{
+		//labelLetterBall.fireEvent('aHide');	
+	}
+	
 });
 
-labelLetterBall.addEventListener('aHideStart',function(e){
-	activityHide = activityHide+1;
-    if(activityHide==1){labelLetterBall.animate(animateHide);}
-    activityShow=0;
-});
 	
 table.addEventListener('scrollend',function(e){
-	//stop animate
-		labelOverMask.setHeight('100%');
-	//labelLetterBall.animate();	
+	animateState == 1;
+	console.log('scroll event end');
 	
-	
-    setTimeout(function(){
-    	labelLetterBall.animate(animateHide,function(){
-    		//enable animate
-    		labelOverMask.setHeight('1px');	
-    	});
+    //setTimeout(function(){
+    	console.log('animeting hiden');
+    	//setTimeout(function(){
+    		console.log('starting timeout end');
+	    	labelLetterBall.fireEvent('aHide');		
+    	//},500);	
     	activityShow=0;
-    },10);
+    //},50);
 });
 
 table.addEventListener('scroll',function(e){
@@ -233,7 +255,15 @@ table.addEventListener('scroll',function(e){
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
 	absoluteLabelLetter.setText(firstVisibleLetter);
-	labelLetterBall.fireEvent('aShow');	
+	
+	//start animate
+	if(animateState == 0){
+		console.log('fireevent show');
+		labelLetterBall.fireEvent('aShow');		
+	} else{
+		
+	}
+	
 
 	
 	if(offsetScrollTarget < baseTop-1) {
@@ -245,7 +275,7 @@ table.addEventListener('scroll',function(e){
 win.add(labelOverMask);
 win.add(labelPadding);
 win.add(absoluteLabelLetter);
-win.add(labelLetterBall);
+//win.add(labelLetterBall);
 win.add(labelTitle);
 win.add(table);
 win.open();
