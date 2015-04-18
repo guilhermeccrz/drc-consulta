@@ -177,15 +177,14 @@ var animateShow = Ti.UI.createAnimation({
 });
 
 //	SET VARIABLES TO ABLE LISTENERS TO WORK
+var scrolling = null;
 var finished = null;
 var activityListerner = 0;
 	
 
 //	ADD LISTERNERS TENTAR SEM O SETIMEOUT E COLOCAR DELAY
 labelLetterBall.addEventListener('aShow',function(e){
-
 	activityListerner = 1;
-	
 	labelLetterBall.animate(animateShow,function(){
   		finished = 1;
 	});
@@ -205,6 +204,12 @@ labelLetterBall.addEventListener('aHide',function(e){
 
 	
 table.addEventListener('scrollend',function(e){
+	if(scrolling == 1){
+		setTimeout(function(){
+			scrolling = 0;
+			labelLetterBall.fireEvent('aHide');
+		},1000);
+	}
 	if(finished == 1){labelLetterBall.fireEvent('aHide');}	
 });
 
@@ -230,6 +235,8 @@ table.addEventListener('scroll',function(e){
 	//set top & start animation
 	labelLetterBall.setTop(offsetScrollTarget+30);
 	
+	
+	scrolling = 1;
 	if(activityListerner == 0){
 		labelLetterBall.fireEvent('aShow');
 	}		
