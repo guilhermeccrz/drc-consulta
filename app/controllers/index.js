@@ -173,65 +173,39 @@ var animateState = 0;
 
 var animateShow = Ti.UI.createAnimation({
 	opacity:1,
-	duration:500,
-	delay:500
+	duration:500
 });
+
+//	SET VARIABLES TO ABLE LISTENERS TO WORK
+var finished = null;
+var activityListerner = 0;
+	
 
 //	ADD LISTERNERS TENTAR SEM O SETIMEOUT E COLOCAR DELAY
 labelLetterBall.addEventListener('aShow',function(e){
+
+	activityListerner = 1;
 	
-  		//animateState = 1;
-  		console.log('animate show  fired');
-  	
-  	  //setTimeout(function(){
-  	  	console.log('animating show');
-  	  	if(animateState == 0){
-  	  			animateState = 1;
-  	  		//setTimeout(function(){
-  	  			console.log('starting timeout show');
-  	  			labelLetterBall.animate(animateShow,function(){
-		  		animateState = 0;
-		  		console.log('animate show done');
-		  		});
-  	  		//},500);	
-		  	
-	  	}
-  	//},500);
+	labelLetterBall.animate(animateShow,function(){
+  		finished = 1;
+	});
 });
 
 var animateHide= Ti.UI.createAnimation({
 	opacity:0,
-	duration:500,
-	delay:500
+	duration:500
 });
 
 labelLetterBall.addEventListener('aHide',function(e){
-	
-	if(animateState == 0){
-		animateState = 1;
-	   labelLetterBall.animate(animateHide,function(){
-		    		animateState = 0;
-		    		console.log('animate hiden done');
-		});
-	}else{
-		//labelLetterBall.fireEvent('aHide');	
-	}
-	
+  activityListerner = 1;	
+  labelLetterBall.animate(animateHide,function(){
+	   activityListerner = 0;
+  });	
 });
 
 	
 table.addEventListener('scrollend',function(e){
-	animateState == 1;
-	console.log('scroll event end');
-	
-    //setTimeout(function(){
-    	console.log('animeting hiden');
-    	//setTimeout(function(){
-    		console.log('starting timeout end');
-	    	labelLetterBall.fireEvent('aHide');		
-    	//},500);	
-    	activityShow=0;
-    //},50);
+	if(finished == 1){labelLetterBall.fireEvent('aHide');}	
 });
 
 table.addEventListener('scroll',function(e){
@@ -248,34 +222,25 @@ table.addEventListener('scroll',function(e){
 	var uiHeight = table.rect.height;
 	var offsetScrollTarget = (offsetPercent * uiHeight) / 100;
 		offsetScrollTarget = parseInt(offsetScrollTarget.toFixed(2));
-		
-		//set top
-		labelLetterBall.setTop(offsetScrollTarget+30);
 
 	//setting values
 	labelLetterBall.setText(firstVisibleLetter);
 	absoluteLabelLetter.setText(firstVisibleLetter);
 	
-	//start animate
-	if(animateState == 0){
-		console.log('fireevent show');
-		labelLetterBall.fireEvent('aShow');		
-	} else{
-		
-	}
+	//set top & start animation
+	labelLetterBall.setTop(offsetScrollTarget+30);
 	
+	if(activityListerner == 0){
+		labelLetterBall.fireEvent('aShow');
+	}		
 
-	
-	if(offsetScrollTarget < baseTop-1) {
-		//	labelLetterBall.fireEvent('aHideStart');
-	}
 });
 
 //	ADD objs to window
 win.add(labelOverMask);
 win.add(labelPadding);
 win.add(absoluteLabelLetter);
-//win.add(labelLetterBall);
+win.add(labelLetterBall);
 win.add(labelTitle);
 win.add(table);
 win.open();
